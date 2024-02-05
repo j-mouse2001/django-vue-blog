@@ -26,6 +26,11 @@ class Tag(models.Model):
     def __str__(self):
         return self.text
 
+
+class Avatar(models.Model):
+    content = models.ImageField(upload_to="avatar/%Y%m%d")
+
+
 # 创建一个博客文章的类
 class Article(models.Model):
 
@@ -48,6 +53,14 @@ class Article(models.Model):
     tags = models.ManyToManyField(
         Tag,
         blank=True,
+        related_name='articles'
+    )
+
+    avatar = models.ForeignKey(
+        Avatar,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
         related_name='articles'
     )
     # 标题
