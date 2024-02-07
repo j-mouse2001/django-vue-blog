@@ -97,12 +97,22 @@ export default {
             storage.setItem('refresh.myblog', response.data.refresh);
             storage.setItem('expiredTime.myblog', expiredTime);
             storage.setItem('username.myblog', that.signinName);
-            // 路由跳转
-            // 登录成功后回到博客首页
-            that.$router.push({name: 'Home'});
+
+            axios
+            .get('/api/user/' + that.signinName + '/')
+            .then(function (response) {
+              storage.setItem('isSuperuser.myblog', response.data.is_superuser);
+              // 路由跳转修改到这里
+              that.$router.push({name: 'Home'});
+            })
           })
-      // 读者自行补充错误处理
-      // .catch(...)
+
+          // 读者自行补充错误处理
+          .catch(function (error) {
+            alert("用户名或密码输入错误")
+          })
+
+
     },
   }
 }

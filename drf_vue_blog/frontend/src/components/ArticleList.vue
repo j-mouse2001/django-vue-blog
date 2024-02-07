@@ -1,24 +1,33 @@
 <template>
     <div v-for="article in info.results" v-bind:key="article.url" id="articles">
-        <div>
-            <span
-                  v-for="tag in article.tags"
-                  v-bind:key="tag"
-                  class="tag"
+        <div class="grid" :style="gridStyle(article)">
+            <div
+                    class="image-container"
             >
-                {{ tag }}
-            </span>
+                <img :src="imageIfExists(article)" alt="" class="image">
+            </div>
+
+            <div>
+                <div>
+                    <span
+                            v-if="article.category !== null"
+                            class="category"
+                    >
+                        {{article.category.title}}
+                    </span>
+                    <span v-for="tag in article.tags" v-bind:key="tag" class="tag">{{ tag }}</span>
+                </div>
+                <div class="a-title-container">
+                    <router-link
+                            :to="{ name: 'ArticleDetail', params: { id: article.id }}"
+                            class="article-title"
+                    >
+                        {{ article.title }}
+                    </router-link>
+                </div>
+                <div>{{ formatted_time(article.created) }}</div>
+            </div>
         </div>
-<!--        <div class="article-title">-->
-<!--            {{ article.title }}-->
-<!--        </div>-->
-            <router-link
-                :to="{ name: 'ArticleDetail', params: { id: article.id }}"
-                class="article-title"
-            >
-            {{ article.title }}
-            </router-link>
-        <div>{{ formatted_time(article.created) }}</div>
     </div>
 
     <div id="paginator">
@@ -56,6 +65,20 @@
             formatted_time: function (iso_date_string) {
                 const date = new Date(iso_date_string);
                 return date.toLocaleDateString()
+            },
+            imageIfExists(article) {
+              if (article.avatar) {
+                return article.avatar.content
+              }
+            },
+
+            gridStyle(article) {
+              if (article.avatar) {
+                return {
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 4fr'
+                }
+              }
             },
 
             is_page_exists(direction) {
@@ -155,5 +178,27 @@
         font-weight: bold;
         padding-left: 10px;
         padding-right: 10px;
+    }
+
+    .category {
+        padding: 5px 10px 5px 10px;
+        margin: 5px 5px 5px 0;
+        font-family: Georgia, Arial, sans-serif;
+        font-size: small;
+        background-color: darkred;
+        color: whitesmoke;
+        border-radius: 15px;
+    }
+
+    .image {
+        width: 180px;
+        border-radius: 10px;
+        box-shadow: darkslategrey 0 0 12px;
+    }
+    .image-container {
+        width: 200px;
+    }
+    .grid {
+        padding-bottom: 10px;
     }
 </style>
